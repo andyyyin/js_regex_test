@@ -3,71 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="../lib/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <style>
+        .input-sizer {
+            display: inline-grid;
+        }
+
+        .input-sizer::after,
+        .input-sizer input {
+            grid-area: 1 / 2;
+            font: inherit;
+            border: none;
+            min-width: 40px;
+        }
+
+        .input-sizer::after {
+            content: attr(data-value) ' ';
+            visibility: hidden;
+            white-space: pre-wrap;
+        }
+
+        .content-text{
+            width: 100%;
+            max-width: 800px;
+            resize: none;
+            flex: 1;
+        }
+
+        .run-button{
+            background-color: rgb(65, 147, 89);
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+        }
+
+        #app{
+            padding-left: 5px;
+        }
+
+    </style>
 </head>
 <body>
+
+<div id="app">
     <p>
-        str = <input id="str">;
+        content:
     </p>
     <p>
-        reg = /<input id="regex">/i;
+        <label style="display:flex;">
+            <textarea v-model="content" class="content-text"></textarea>
+        </label>
     </p>
     <p>
-        <button id="run">RUN</button>
+        reg = /
+        <!--        <input id="regex" v-model="regexStr">-->
+        <label class="input-sizer">
+            <input type="text" v-model="regexStr" onInput="this.parentNode.dataset.value = this.value" size="1" placeholder="regex">
+        </label>
+        /i;
+    </p>
+    <p>
+    </p>
+    <p>
+        <button @click="run" class="run-button">RUN</button>
     </p>
     <p class="results">
-        str.search(reg) = "<span id="searchResult"></span>"
+        str.search(reg) = {{result.search}}
     </p>
     <p class="results">
-        str.replace(reg, "@") = "<span id="replaceResult"></span>"
+        str.replace(reg, "@") = {{result.replace}}
     </p>
     <p class="results">
-        str.split(reg) = [<span id="splitResult"></span>]
+        str.split(reg) = {{result.split}}
     </p>
     <p class="results">
-        reg.test(str) = <span id="testResult"></span>
+        reg.test(str) = {{result.test}}
     </p>
     <p class="results">
-        reg.exec(str) = [<span id="execResult"></span>]
+        reg.exec(str) = {{result.exec}}
     </p>
+<!--    <p class="results">-->
+<!--        reg.compile(reg) //没看懂这东西有什么卵用-->
+<!--    </p>-->
     <p class="results">
-        reg.compile(reg) //没看懂这东西有什么卵用
+        str.match(reg) = {{result.match}}
     </p>
-    <p class="results">
-        str.match(reg) = [<span id="matchResult"></span>]
-    </p>
+
+</div>
+
 </body>
 
 <script>
-    (function () {
-        $(".results").hide();
-        $("#run").bind("click",run);
-    })();
-    function run(){
-        var str = $("#str").val();
-        var regex = new RegExp($("#regex").val(), "i");
-        $("#searchResult").html(str.search(regex));
-        $("#replaceResult").html(str.replace(regex, "@"));
-        $("#testResult").html(regex.test(str));
-        var execArray = regex.exec(str);
-        $("#execResult").html("")
-        for(var i in execArray){
-            $("#execResult").append("'"+execArray[i]+"', ");
-        }
-        var matchArray = str.match(regex);
-        $("#matchResult").html("")
-        for(var i in matchArray){
-            $("#matchResult").append("'"+matchArray[i]+"', ");
-        }
-        var splitArray = str.split(regex);
-        $("#splitResult").html("")
-        for(var i in splitArray){
-            $("#splitResult").append("'"+splitArray[i]+"', ");
-        }
 
-
-        $(".results").show();
+  const app = new Vue({
+    el: '#app',
+    data() {
+      return {
+        content: '',
+        regexStr: '',
+        result: {
+          search: undefined,
+          replace: undefined,
+          split: undefined,
+          test: undefined,
+          exec: undefined,
+          compile: undefined,
+          match: undefined,
+        }
+      }
+    },
+    methods: {
+      run() {
+        const content = this.content
+        const regex = new RegExp(this.regexStr, "i")
+        this.result.search = content.search(regex)
+        this.result.replace = content.replace(regex, "@")
+        this.result.split = content.split(regex)
+        this.result.test = regex.test(content)
+        this.result.exec = regex.exec(content)
+        this.result.match = content.match(regex)
+      }
     }
+  })
 
 </script>
 </html>
