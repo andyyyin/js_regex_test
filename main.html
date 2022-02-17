@@ -307,7 +307,7 @@
 			},
 			run() {
 				const content = this.content
-				const regex = new RegExp(this.regexStr)
+				const regex = new RegExp(this.regexStr, this.flag || undefined)
 				this.result.search = content.search(regex)
 				this.result.replace = content.replace(regex, "@")
 				this.result.split = content.split(regex)
